@@ -1,5 +1,6 @@
 */version.txt
 *.pyc
+__pycache__/
 *.swp
 build/
 dist/
