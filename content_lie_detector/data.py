@@ -8,12 +8,26 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 
-def get_titles(file):
+def get_data(file, title_text=True, subject=False, date=False):
+
     path = os.path.dirname(os.path.dirname(__file__)) + 'raw_data/'
     data = pd.read_csv(path + file)
-    data = data[['title', 'target']]
 
-    return data
+    features = ["article"]
+
+    data[["article"]] = data["title"] + ' ' + data["text"]
+
+    if date:
+        data[["date"]] = pd.to_datetime(data["date"])
+        features.append("date")
+
+    if subject:
+        features.append("subject")
+
+    X = data[features]
+    y = data["target"]
+
+    return X, y
 
 
 def nl_preprocessing(data, rm_punctuation=False, mk_lowercase=False, rm_digits=False, rm_stopwords=False, lemmatize=False):
@@ -51,6 +65,6 @@ def nl_preprocessing(data, rm_punctuation=False, mk_lowercase=False, rm_digits=F
 
 if __name__ == "__main__":
     # data = get_titles('fake_real_data.csv')
-    data = get_titles('fake_real_data.csv')
-    print(data.title[0])
-    print(nl_preprocessing(data.title[0:2]))
+    feat, target = get_data('fake_real_data.csv')
+    print(feat.article[0])
+    print(nl_preprocessing([feat.article[0]]))
