@@ -7,7 +7,6 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-
 def get_data(file, title_text=True, subject=False, date=False):
 
     path = os.path.dirname(os.path.dirname(__file__)) + 'raw_data/'
@@ -62,6 +61,35 @@ def nl_preprocessing(data, rm_punctuation=False, mk_lowercase=False, rm_digits=F
 
     return output
 
+def remove_punctuations(text):
+    for punctuation in string.punctuation:
+        text = text.replace(punctuation, '')
+    return text
+
+def lower(text):
+    text = text.lower()
+    return text
+
+def number(text):
+    text = ''.join(word for word in text if not word.isdigit())
+    return text
+
+def stop(text):
+    stop_words = set(stopwords.words('english'))
+    word_tokens = word_tokenize(text)
+    text = [w for w in word_tokens if not w in stop_words]
+    return text
+
+def lemmatize(text):
+
+    lemmatizer = WordNetLemmatizer()
+    lemmatized = [lemmatizer.lemmatize(word) for word in text]
+    text = lemmatized
+    return text
+
+def virg(text):
+    text=" ".join(text)
+    return text
 
 if __name__ == "__main__":
     # data = get_titles('fake_real_data.csv')
