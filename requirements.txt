@@ -9,4 +9,5 @@ tensorflow
 fastapi
 numpy
 requests
+pydantic
 uvicorn

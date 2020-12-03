@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 import numpy as np
 import requests as rq
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 # import os
 # from tensorflow.keras import models
@@ -12,10 +13,25 @@ from pydantic import BaseModel
 
 
 class Item(BaseModel):
-    url: str
+    article_url: str
 
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "https://fakenews-ktojww43aq-ew.a.run.app",
+    "http://fakenews-ktojww43aq-ew.a.run.app"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
@@ -29,10 +45,6 @@ def index():
 
 @app.post("/isfakenews/")
 async def create_item(item: Item):
-    return item
-
-
-def predict(item):
     # TO DO: SCRAP URL TITLE + CONTENT
 
     # path = os.path.dirname(os.path.dirname(__file__)) + "/"
@@ -42,4 +54,4 @@ def predict(item):
     # pred = model.predict(sample)
     # return {"content": content,
     #         "proba_fake": round(pred.item(0), 2)}
-    return {"proba_fake": round(np.random.random(), 2)}
+    return {"url": item.article_url, "proba_fake": round(np.random.random(), 2)}
