@@ -1,3 +1,1 @@
-graft content_lie_detector
-global-exclude *.py[cod] __pycache__ *.so *.ipynb
-recursive-exclude  content_lie_detector/jupy *
+include requirements.txt
