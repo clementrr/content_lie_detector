@@ -1,13 +1,7 @@
 pip
 setuptools
 wheel
-pytest
-coverage
 flake8
-black
-yapf
-python-gitlab
-twine
 pandas
 numpy
 nltk
@@ -15,3 +9,4 @@ tensorflow
 fastapi
 numpy
 requests
+uvicorn
