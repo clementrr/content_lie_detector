@@ -17,10 +17,7 @@ class Item(BaseModel):
 app = FastAPI()
 
 origins = [
-    "http://localhost",
-    "http://localhost:8000",
-    "https://fakenews-ktojww43aq-ew.a.run.app",
-    "http://fakenews-ktojww43aq-ew.a.run.app"
+    "*"
 ]
 
 app.add_middleware(
@@ -48,4 +45,4 @@ async def create_item(item: Item):
     # pred = model.predict(sample)
     # return {"content": content,
     #         "proba_fake": round(pred.item(0), 2)}
-    return {"url": item.article_url, "proba_fake": round(np.random.random(), 2)}
+    return {"article_url": item.article_url, "proba": round(np.random.random(), 2)}
