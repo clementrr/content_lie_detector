@@ -1,7 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
 import numpy as np
-import requests as rq
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -36,10 +34,6 @@ app.add_middleware(
 
 @app.get("/")
 def index():
-    # res = rq.get("https://breaking-bad-quotes.herokuapp.com/v1/quotes")
-    # quote = res.json()[0]["quote"]
-    # author = res.json()[0]["author"]
-    # return f"""Coming Soon ...<br><p style="font-size:20px">{quote}</p><p><b>{author}<b></p>"""
     return {"status": "OK"}
 
 
