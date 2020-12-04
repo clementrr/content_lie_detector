@@ -13,3 +13,4 @@ pydantic
 uvicorn
 google-cloud-storage
 trafilatura
+sklearn
