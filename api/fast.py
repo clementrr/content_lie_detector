@@ -49,7 +49,7 @@ async def create_item(item: Item):
     j = tf.extract(r, json_output=True)
     # Clean and Get Title + Content
     j = json.loads(j)
-    txt = j.get("title", "") + " " + j["text"]
+    txt = j.get("title", "")
     txt = txt.replace("\n", "")
 
     # Get preprocessor and model
