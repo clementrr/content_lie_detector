@@ -1,0 +1,13 @@
+pip
+setuptools
+wheel
+flake8
+pandas
+numpy
+nltk
+tensorflow
+fastapi
+numpy
+requests
+pydantic
+uvicorn

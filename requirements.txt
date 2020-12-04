@@ -11,3 +11,4 @@ numpy
 requests
 pydantic
 uvicorn
+google-cloud-storage
