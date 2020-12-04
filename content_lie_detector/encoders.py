@@ -37,8 +37,14 @@ class CustomTokenizer(TransformerMixin, BaseEstimator):
 
     def transform(self, X, y=None):
         X = [sentence.split(' ') for sentence in X]
-        frequent_words = {k: v for k, v in self.occurences_dictionnary.items() if v >= self.min_occurence}
-        X = [[word for word in sentence if word in frequent_words] for sentence in X]
-        X = [[self.word_id_dict[_] for _ in s if _ in self.word_id_dict] for s in X]
-        X = pad_sequences(X, dtype='float32', padding='post', maxlen=self.max_len)
+        frequent_words = {k: v for k, v in self.occurences_dictionnary.items()
+                          if v >= self.min_occurence}
+        X = [[word for word in sentence if word in frequent_words]
+             for sentence in X]
+        X = [[self.word_id_dict[_] for _ in s if _ in self.word_id_dict]
+             for s in X]
+        X = pad_sequences(X,
+                          dtype='float32',
+                          padding='post',
+                          maxlen=self.max_len)
         return X

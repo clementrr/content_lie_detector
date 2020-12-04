@@ -1,0 +1,17 @@
+MANIFEST.in
+README.md
+requirements.txt
+setup.py
+api/__init__.py
+api/fast.py
+content_lie_detector/__init__.py
+content_lie_detector/data.py
+content_lie_detector/encoders.py
+content_lie_detector.egg-info/PKG-INFO
+content_lie_detector.egg-info/SOURCES.txt
+content_lie_detector.egg-info/dependency_links.txt
+content_lie_detector.egg-info/not-zip-safe
+content_lie_detector.egg-info/requires.txt
+content_lie_detector.egg-info/top_level.txt
+scripts/content_lie_detector-run
+tests/__init__.py

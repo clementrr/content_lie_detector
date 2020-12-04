@@ -13,3 +13,5 @@ groupama/data/base_pno.*
 raw_data/
 .vscode/
 *.ipynb
+eggs
+src/*.egg-info
