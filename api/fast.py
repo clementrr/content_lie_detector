@@ -39,6 +39,26 @@ def index():
     return {"status": "OK"}
 
 
+@app.get("/isfake/")
+async def read_item(article_url: str):
+    # Get Article, as json, from url
+    r = tf.fetch_url(article_url)
+    j = tf.extract(r, json_output=True)
+    # Clean and Get Title + Content
+    j = json.loads(j)
+    txt = j.get("title", "")
+    txt = txt.replace("\n", "")
+    # Get preprocessor and model
+    path = os.path.dirname(os.path.dirname(__file__)) + "/"
+    model = models.load_model(path + "model")
+    preprocessor = joblib.load(path + "preprocessor.joblib")
+    # Preprocess text and predict
+    txt = preprocessor.transform([txt])
+    pred = model.predict(txt)
+    del r, j, txt, path, model, preprocessor
+    return {"proba": round(pred.item(0), 2)}
+
+
 # Endpoint: prediction
 @app.post("/isfakenews/")
 async def create_item(item: Item):
@@ -51,7 +71,6 @@ async def create_item(item: Item):
     j = json.loads(j)
     txt = j.get("title", "")
     txt = txt.replace("\n", "")
-
     # Get preprocessor and model
     path = os.path.dirname(os.path.dirname(__file__)) + "/"
     model = models.load_model(path + "model")
@@ -59,6 +78,5 @@ async def create_item(item: Item):
     # Preprocess text and predict
     txt = preprocessor.transform([txt])
     pred = model.predict(txt)
+    del r, j, txt, path, model, preprocessor
     return {"proba": round(pred.item(0), 2)}
-    # return {"article_url": item.article_url,
-    #         "proba": round(np.random.random(), 2)}
