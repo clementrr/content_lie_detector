@@ -1,14 +1,12 @@
+import os
+import joblib
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import json
-import trafilatura as tf
-import os
 from tensorflow.keras import models
-import joblib
-# import numpy as np
-# from content_lie_detector.encoders import CustomTokenizer
-# from content_lie_detector.data import get_data
+from api.helpers import get_article_from_url,\
+                        preprocess_and_predict,\
+                        make_heatmap_html
 
 
 # Init item for POST
@@ -20,9 +18,7 @@ class Item(BaseModel):
 app = FastAPI()
 
 # Set authorizations to accept all origins
-origins = [
-    "*"
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,51 +28,47 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Get preprocessor and model
+path = os.path.dirname(os.path.dirname(__file__)) + "/"
+model = models.load_model(path + "model")
+preprocessor = joblib.load(path + "preprocessor.joblib")
 
-# Endpoint: test
+
+# Endpoint: Health
 @app.get("/")
 def index():
     return {"status": "OK"}
 
 
+# Endpoint Get Prediction
 @app.get("/isfake/")
 async def read_item(article_url: str):
-    # Get Article, as json, from url
-    r = tf.fetch_url(article_url)
-    j = tf.extract(r, json_output=True)
-    # Clean and Get Title + Content
-    j = json.loads(j)
-    txt = j.get("title", "")
-    txt = txt.replace("\n", "")
-    # Get preprocessor and model
-    path = os.path.dirname(os.path.dirname(__file__)) + "/"
-    model = models.load_model(path + "model")
-    preprocessor = joblib.load(path + "preprocessor.joblib")
+
+    # Get text of Article
+    txt = get_article_from_url(article_url)
+
     # Preprocess text and predict
-    txt = preprocessor.transform([txt])
-    pred = model.predict(txt)
-    del r, j, txt, path, model, preprocessor
-    return {"proba": round(pred.item(0), 2)}
+    pred = preprocess_and_predict(txt, preprocessor, model)
+
+    # Generate txt with heatmap as html
+    heatmap_html = make_heatmap_html(txt, preprocessor, model)
+
+    return {"proba": round(pred.item(0), 2),
+            "heatmap_html": heatmap_html}
 
 
-# Endpoint: prediction
+# Endpoint Post Url
 @app.post("/isfakenews/")
 async def create_item(item: Item):
-    # Get article url
-    article_url = item.article_url
-    # Get Article, as json, from url
-    r = tf.fetch_url(article_url)
-    j = tf.extract(r, json_output=True)
-    # Clean and Get Title + Content
-    j = json.loads(j)
-    txt = j.get("title", "")
-    txt = txt.replace("\n", "")
-    # Get preprocessor and model
-    path = os.path.dirname(os.path.dirname(__file__)) + "/"
-    model = models.load_model(path + "model")
-    preprocessor = joblib.load(path + "preprocessor.joblib")
+
+    # Get text of Article
+    txt = get_article_from_url(item.article_url)
+
     # Preprocess text and predict
-    txt = preprocessor.transform([txt])
-    pred = model.predict(txt)
-    del r, j, txt, path, model, preprocessor
-    return {"proba": round(pred.item(0), 2)}
+    pred = preprocess_and_predict(txt, preprocessor, model)
+
+    # Generate txt with heatmap as html
+    heatmap_html = make_heatmap_html(txt, preprocessor, model)
+
+    return {"proba": round(pred.item(0), 2),
+            "heatmap_html": heatmap_html}
