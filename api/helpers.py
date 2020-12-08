@@ -27,7 +27,7 @@ def preprocess_and_predict(txt, preproc, model):
 
 def make_heatmap_html(txt, preproc, model):
 
-    preprocess_and_predict(txt, preproc, model)
+    pred = preprocess_and_predict(txt, preproc, model)
 
     pad = preproc.transform([txt])
 
@@ -48,10 +48,16 @@ def make_heatmap_html(txt, preproc, model):
     norm_len = preproc.max_len/last_conv_layer.output_shape[1]
     html = ""
 
+    if pred <= 0.4:
+        word_span = "<span style='background-color:rgba(57,160,{},{})'>{} </span>"
+    elif pred <= 0.7:
+        word_span = "<span style='background-color:rgba({},104,83,{})'>{} </span>"
+    else:
+        word_span = "<span style='background-color:rgba({},0,1,{})'>{} </span>"
+
     for j, i in enumerate(txt.split()):
-        html += "<span style='background-color:rgba({},0,150,{})'>{} </span>"\
-                .format(heatmap[math.floor(j/norm_len)]*255,
-                        heatmap[math.floor(j/norm_len)]-0.3,
-                        i)
+        html += word_span.format(heatmap[math.floor(j/norm_len)]*255,
+                                 heatmap[math.floor(j/norm_len)]-0.3,
+                                 i)
 
     return html
